@@ -1,0 +1,10 @@
+.header {
+  height: auto;
+  background: none;
+}
+.headerMenu {
+  width: 160px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
