@@ -3,16 +3,19 @@ import { Input, Layout, Menu } from "antd";
 
 import "./MoveHeader.css";
 import _ from "lodash";
-
 const { Header } = Layout;
 
 export default class MoveHeader extends React.Component {
   hundleOnSearch = _.debounce((e) => {
     const value = e.target.value;
     if (value.trim().length) {
-      console.log(e.target.value);
+      this.props.searchMove(value);
     }
   }, 300);
+
+  hundleMenu = (e) => {
+    this.props.setMenuKey(e.key);
+  };
 
   render() {
     return (
@@ -21,12 +24,13 @@ export default class MoveHeader extends React.Component {
           className="headerMenu"
           theme="light"
           mode="horizontal"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[this.props.menuKeyBar]}
           items={["Search", "Rated"].map((element, idx) => {
             const key = idx + 1;
             return {
               key,
               label: element,
+              onClick: this.hundleMenu,
             };
           })}
         ></Menu>

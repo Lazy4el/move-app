@@ -1,49 +1,39 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { Layout, Row, Pagination, Spin, Alert } from "antd";
+import { Layout, Row, Pagination, Spin, Alert, Result } from "antd";
 
-import MoveItem from "../MoveItem/MoveItem";
-import MovieServis from "../MovieServis/MovieServis";
 import "./MoveList.css";
+import MoveItem from "../MoveItem/MoveItem";
 
 const { Content } = Layout;
 
 export default class MoveList extends React.Component {
-  movieServis = new MovieServis();
-  state = {
-    movies: null,
-    genres: null,
-    loading: true,
-    error: false,
-  };
-
-  componentDidMount() {
-    this.getMovies();
-  }
-
-  async getMovies(page = 1) {
-    this.setState({ loading: true });
-    const { movies, error } = await this.movieServis.getListFilms(page);
-    const genres = await this.movieServis.getGenre();
-    this.setState({ movies, genres, error, loading: false });
-  }
-
-  getPage = async (e) => {
-    this.getMovies(e);
-  };
-
+  getPage = this.props.getPage;
   render() {
-    const loadSpin = this.state.loading ? (
+    const { genres, error, loading, movies, page, totalPages } =
+      this.props.paramFilms;
+
+    const loadSpin = loading ? (
       <Spin className="loadSpiner" tip="Loading..."></Spin>
     ) : null;
 
+    const emptyMovies =
+      !movies.length && !loading ? (
+        <Result status="warning" title="Nothing found."></Result>
+      ) : null;
     const content =
-      !this.state.loading && this.state.error ? (
-        <MoveView state={this.state} getPage={this.getPage}></MoveView>
+      !loading && error && movies.length ? (
+        <MoveView
+          movies={movies}
+          genres={genres}
+          page={page}
+          totalPages={totalPages}
+          getPage={this.getPage}
+        ></MoveView>
       ) : null;
 
     const loadError =
-      !this.state.loading && !this.state.error ? (
+      !loading && !error ? (
         <Alert
           message="Error"
           description="This is an error message about copywriting."
@@ -53,28 +43,22 @@ export default class MoveList extends React.Component {
       ) : null;
     return (
       <Content className="mainContent">
+        {emptyMovies}
         {loadSpin}
         {loadError}
         {content}
-        <Pagination
-          className="mainPagination"
-          size="small"
-          total={10000}
-          pageSize={20}
-          onChange={this.getPage}
-        />
       </Content>
     );
   }
 }
 
-const MoveView = ({ state }) => {
+const MoveView = ({ movies, genres, totalPages, page, getPage }) => {
   return (
     <React.Fragment>
       <Row gutter={[36, 36]}>
-        {state.movies.map((element) => {
+        {movies.map((element) => {
           const genre = element.genre_ids.map((genreId) => {
-            return state.genres.find((el) => {
+            return genres.find((el) => {
               return el.id === genreId;
             });
           });
@@ -91,6 +75,13 @@ const MoveView = ({ state }) => {
           );
         })}
       </Row>
+      <Pagination
+        showSizeChanger={false}
+        className="mainPagination"
+        total={totalPages}
+        defaultCurrent={page}
+        onChange={getPage}
+      />
     </React.Fragment>
   );
 };

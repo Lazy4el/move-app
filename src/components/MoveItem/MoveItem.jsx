@@ -36,15 +36,14 @@ export default class MoveItem extends React.Component {
   render() {
     const { title, releaseDate, posterPath, overview, raiting, genre } =
       this.props;
+    const posterImg = posterPath
+      ? `https://image.tmdb.org/t/p/w500${posterPath}`
+      : "https://blog.vverh.digital/wp-content/uploads/2020/06/oblojka-404.png";
     return (
       <Col className="gutter-row" span={12}>
         <div className="moveBox">
           <div className="moveImg">
-            <Image
-              width={180}
-              height={280}
-              src={"https://image.tmdb.org/t/p/w500" + posterPath}
-            />
+            <Image width={180} height={280} src={posterImg} />
           </div>
           <div className="moveDescription">
             <div className="moveTitle">

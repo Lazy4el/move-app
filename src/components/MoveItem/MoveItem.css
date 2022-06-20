@@ -12,7 +12,6 @@ html {
   max-height: 280px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -44,17 +43,8 @@ html {
   font-weight: 400;
   font-size: 12px;
   line-height: 22px;
-}
-
-.moveRaiting::before {
-  position: absolute;
-  content: "";
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
   border: 2px solid #e9d100;
-  left: 0;
-  top: 0;
+  border-radius: 50%;
 }
 
 .moveDate {
