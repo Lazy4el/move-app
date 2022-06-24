@@ -65,11 +65,13 @@ const MoveView = ({ movies, genres, totalPages, page, getPage }) => {
           return (
             <MoveItem
               key={element.id}
+              id={element.id}
               title={element.original_title}
               releaseDate={element.release_date}
               posterPath={element.poster_path}
               overview={element.overview}
-              raiting={element.vote_average}
+              voteAverage={element.vote_average}
+              rating={element.rating}
               genre={genre}
             ></MoveItem>
           );

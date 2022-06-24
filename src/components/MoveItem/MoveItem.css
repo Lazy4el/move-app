@@ -8,45 +8,33 @@ html {
   }
 }
 .moveBox {
+  padding-right: 10px;
   min-width: 390px;
   max-height: 280px;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 180px auto;
+  grid-template-rows: auto auto auto auto auto;
+  column-gap: 20px;
+  row-gap: 5px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.moveDescription {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-left: 20px;
+.voteAverage .ant-progress-inner .ant-progress-text {
+  color: #000000;
 }
-
 .moveTitle {
-  padding-top: 12px;
+  margin-top: 12px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-
-.moveRaiting {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;
-  margin-left: 10px;
-  height: 30px;
-  min-width: 30px;
-  position: relative;
-  text-align: center;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 22px;
-  border: 2px solid #e9d100;
-  border-radius: 50%;
+.moveImg {
+  width: 180px;
+  height: 280px;
 }
-
+.moveImg-box {
+  grid-row: 1/-1;
+}
 .moveDate {
   font-style: normal;
   font-weight: 400;
@@ -74,8 +62,35 @@ html {
 }
 
 .moveRate {
-  position: absolute;
+  justify-self: center;
+  align-self: end;
   padding-bottom: 18px;
   font-size: 18px;
-  bottom: 0;
+}
+.ant-pagination-item-active {
+  background-color: #1890ff;
+}
+.ant-pagination-item-active a {
+  color: #fff;
+}
+@media screen and (max-width: 576px) {
+  .moveBox {
+    min-width: 346px;
+    grid-template-columns: 60px auto;
+    padding: 5px 10px;
+  }
+  .moveImg-box {
+    grid-row: 1/4;
+  }
+  .moveImg {
+    width: 60px;
+    height: 90px;
+  }
+  .moveOverview {
+    grid-column: 1/-1;
+  }
+  .moveRate {
+    grid-column: 1/-1;
+    justify-self: end;
+  }
 }

@@ -5,6 +5,7 @@ import "./App.css";
 import MoveList from "../MoveList/MoveList";
 import MoveHeader from "../MoveHeader/MoveHeader";
 import MovieServis from "../MovieServis/MovieServis";
+import Cookies from "js-cookie";
 
 export default class App extends React.Component {
   movieServis = new MovieServis();
@@ -21,13 +22,26 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
+    this.setCookie();
     this.getMovies(this.state.searchValue, this.state.page);
   }
 
+  // Записывем в куки
+  setCookie = async () => {
+    if (
+      !Cookies.get("guest_session_id") ||
+      Cookies.get("guest_session_id") === "undefined"
+    ) {
+      const sessionId = await this.movieServis.getSession();
+      Cookies.set("guest_session_id", sessionId);
+    }
+  };
+
   // По клику переключаем вкладки
-  setMenuKey = (menuKeyBar) => {
+  setMenuKey = async (menuKeyBar) => {
     if (menuKeyBar === "2") {
-      this.setState({ movies: [] });
+      const { markFilms, totalPages } = await this.movieServis.getMarkFilms();
+      this.setState({ movies: [...markFilms], totalPages });
     } else {
       this.getMovies("return", 1);
       this.setState({ page: 1 });
@@ -53,15 +67,40 @@ export default class App extends React.Component {
       page
     );
 
+    const { markFilms } = await this.movieServis.getMarkFilms();
+
+    const newMoves = movies.map((movie) => {
+      const fidnMark = markFilms.find((markFilm) => {
+        if (markFilm.id === movie.id) {
+          return markFilm;
+        }
+      });
+
+      return fidnMark ? fidnMark : movie;
+    });
     const genres = await this.movieServis.getGenre();
-    this.setState({ movies, genres, totalPages, error, loading: false });
+    this.setState({
+      movies: newMoves,
+      genres,
+      totalPages,
+      error,
+      loading: false,
+    });
   };
 
-  getPage = async (page) => {
-    this.getMovies(this.state.searchValue, page);
-    this.setState({ page: page });
+  getPage = (page) => {
+    console.log("this.menuKeyBar", this.menuKeyBar);
+    if (this.menuKeyBar === "1") {
+      this.getMovies(this.state.searchValue, page);
+      this.setState({ page });
+    } else {
+      this.setMenuKey(this.state.searchValue, page);
+      this.setState({ page });
+    }
+    console.log(page);
     return page;
   };
+
   render() {
     return (
       <Layout className="container">

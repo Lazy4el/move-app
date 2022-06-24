@@ -16,8 +16,14 @@ export default class MoveHeader extends React.Component {
   hundleMenu = (e) => {
     this.props.setMenuKey(e.key);
   };
-
   render() {
+    const searchBarVisible =
+      this.props.menuKeyBar === "1" ? (
+        <Input
+          onChange={this.hundleOnSearch}
+          placeholder="Type to search..."
+        ></Input>
+      ) : null;
     return (
       <Header className="header">
         <Menu
@@ -34,10 +40,7 @@ export default class MoveHeader extends React.Component {
             };
           })}
         ></Menu>
-        <Input
-          onChange={this.hundleOnSearch}
-          placeholder="Type to search..."
-        ></Input>
+        {searchBarVisible}
       </Header>
     );
   }

@@ -7,4 +7,10 @@
   display: flex;
   justify-content: center;
   margin: 0 auto;
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 576px) {
+  .header {
+    padding: 0;
+  }
 }
