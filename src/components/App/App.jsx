@@ -39,9 +39,12 @@ export default class App extends React.Component {
 
   // По клику переключаем вкладки
   setMenuKey = async (menuKeyBar) => {
+    this.setState({ loading: true });
     if (menuKeyBar === "2") {
       const { markFilms, totalPages } = await this.movieServis.getMarkFilms();
-      this.setState({ movies: [...markFilms], totalPages });
+      this.setState(() => {
+        return { movies: [...markFilms], totalPages };
+      });
     } else {
       this.getMovies("return", 1);
       this.setState({ page: 1 });
@@ -49,6 +52,8 @@ export default class App extends React.Component {
     this.setState(() => {
       return { menuKeyBar };
     });
+
+    this.setState({ loading: false });
   };
 
   // Поиск
@@ -88,19 +93,11 @@ export default class App extends React.Component {
     });
   };
 
-  getPage = (page) => {
-    console.log("this.menuKeyBar", this.menuKeyBar);
-    if (this.menuKeyBar === "1") {
-      this.getMovies(this.state.searchValue, page);
-      this.setState({ page });
-    } else {
-      this.setMenuKey(this.state.searchValue, page);
-      this.setState({ page });
-    }
-    console.log(page);
+  getPage = async (page) => {
+    await this.getMovies(this.state.searchValue, page);
+    this.setState({ page });
     return page;
   };
-
   render() {
     return (
       <Layout className="container">

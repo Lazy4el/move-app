@@ -15,17 +15,15 @@ export default class MovieServis {
   };
 
   // Оцененные фильмы
-  getMarkFilms = async () => {
+  getMarkFilms = async (page = 1) => {
     const cookies = Cookies.get("guest_session_id");
     const response = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${cookies}/rated/movies?api_key=${this._keyAPI}&language=en-US&sort_by=created_at.asc`
+      `https://api.themoviedb.org/3/guest_session/${cookies}/rated/movies?api_key=${this._keyAPI}&language=en-US&sort_by=created_at.asc&page=${page}`
     );
     if (!response.ok) throw new Error("Mark failed");
     const markFilmsList = await response.json();
     const markFilms = markFilmsList.results;
     const totalPages = markFilmsList.total_pages;
-    console.log(markFilmsList);
-
     return { markFilms, totalPages };
   };
 

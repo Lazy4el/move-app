@@ -81,6 +81,7 @@ const MoveView = ({ movies, genres, totalPages, page, getPage }) => {
         showSizeChanger={false}
         className="mainPagination"
         total={totalPages}
+        defaultPageSize={20}
         defaultCurrent={page}
         onChange={getPage}
       />
