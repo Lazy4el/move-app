@@ -22,7 +22,7 @@ export default class MoveList extends React.Component {
         <Result status="warning" title="Nothing found."></Result>
       ) : null;
     const content =
-      !loading && error && movies.length ? (
+      !loading && !error && movies.length ? (
         <MoveView
           movies={movies}
           genres={genres}
@@ -33,7 +33,7 @@ export default class MoveList extends React.Component {
       ) : null;
 
     const loadError =
-      !loading && !error ? (
+      !loading && error ? (
         <Alert
           message="Error"
           description="This is an error message about copywriting."
@@ -81,7 +81,7 @@ const MoveView = ({ movies, genres, totalPages, page, getPage }) => {
         showSizeChanger={false}
         className="mainPagination"
         total={totalPages}
-        defaultPageSize={20}
+        defaultPageSize={1}
         defaultCurrent={page}
         onChange={getPage}
       />

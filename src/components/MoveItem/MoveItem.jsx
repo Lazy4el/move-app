@@ -23,7 +23,7 @@ export default class MoveItem extends React.Component {
   /* Format Text - Overview */
   overviewFormat(text) {
     if (text.length >= 180) {
-      return text.split(" ").slice(0, 24).join(" ") + " ...";
+      return text.split(" ").slice(0, 20).join(" ") + " ...";
     }
     return text;
   }

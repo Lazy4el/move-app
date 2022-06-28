@@ -73,7 +73,7 @@ html {
 .ant-pagination-item-active a {
   color: #fff;
 }
-@media screen and (max-width: 576px) {
+@media (max-width: 576px) {
   .moveBox {
     min-width: 346px;
     grid-template-columns: 60px auto;

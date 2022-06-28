@@ -2,9 +2,13 @@ import Cookies from "js-cookie";
 
 export default class MovieServis {
   _keyAPI = `1600e251544c3774f2b2cb7b8f3a251a`;
+  _baseUrlAPI = `https://api.themoviedb.org/3/`;
   _autorizteAPI = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=`;
-  _popularUrlAPI = `https://api.themoviedb.org/3/search/movie?api_key=${this._keyAPI}&language=en-US&include_adult=false`;
   _genreUrlAPI = `https://api.themoviedb.org/3/genre/movie/list?api_key=${this._keyAPI}&language=en-US`;
+
+  _getResponse = async (url, option = {}) => {
+    return await fetch(this._baseUrlAPI + url, option);
+  };
 
   // Гостевая сессия
   getSession = async () => {
@@ -31,36 +35,36 @@ export default class MovieServis {
   setMarkFilm = async (filmId, mark) => {
     const cookies = Cookies.get("guest_session_id");
     const requestBody = JSON.stringify({ value: mark });
-
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${filmId}/rating?api_key=${this._keyAPI}&guest_session_id=${cookies}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: requestBody,
-      }
+    const body = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    };
+    this._getResponse(
+      `movie/${filmId}/rating?api_key=${this._keyAPI}&guest_session_id=${cookies}`,
+      body
     );
-    if (!response.ok) throw new Error("Mark failed");
   };
 
   // Жанры
   getGenre = async () => {
     const response = await fetch(this._genreUrlAPI);
-    if (!response.ok) throw new Error("Genres failed");
     const genre = await response.json();
     return genre.genres;
   };
 
   // Cписок фильмов
-  getListFilms = async (moveTitle = "return", page = 1) => {
-    const response = await fetch(
-      `${this._popularUrlAPI}&query=${moveTitle}&page=${page}`
-    );
-    if (!response.ok) throw new Error("Filsm failed");
+  getListFilms = async (query = "return", page = 1) => {
+    const url = `search/movie?api_key=${this._keyAPI}&query=${query}&page=${page}`;
+    let error = false;
+    const response = await this._getResponse(url);
+    if (!response.ok) {
+      error = true;
+    }
     const films = await response.json();
-    const error = films ? films : false;
+
     const movies = films.results;
     const totalPages = films.total_pages;
     return { movies, totalPages, error };

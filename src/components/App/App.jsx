@@ -22,16 +22,14 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    this.setCookie();
-    this.getMovies(this.state.searchValue, this.state.page);
+    this.setCookie().then(() => {
+      this.getMovies(this.state.searchValue, this.state.page);
+    });
   }
 
   // Записывем в куки
   setCookie = async () => {
-    if (
-      !Cookies.get("guest_session_id") ||
-      Cookies.get("guest_session_id") === "undefined"
-    ) {
+    if (!Cookies.get("guest_session_id")) {
       const sessionId = await this.movieServis.getSession();
       Cookies.set("guest_session_id", sessionId);
     }
@@ -47,13 +45,9 @@ export default class App extends React.Component {
       });
     } else {
       this.getMovies("return", 1);
-      this.setState({ page: 1 });
     }
-    this.setState(() => {
-      return { menuKeyBar };
-    });
 
-    this.setState({ loading: false });
+    this.setState({ page: 1, loading: false, menuKeyBar });
   };
 
   // Поиск
@@ -72,8 +66,7 @@ export default class App extends React.Component {
       page
     );
 
-    const { markFilms } = await this.movieServis.getMarkFilms();
-
+    const markFilms = await this._getAllMarkFilms();
     const newMoves = movies.map((movie) => {
       const fidnMark = markFilms.find((markFilm) => {
         if (markFilm.id === movie.id) {
@@ -93,10 +86,41 @@ export default class App extends React.Component {
     });
   };
 
+  // Пагинация
   getPage = async (page) => {
-    await this.getMovies(this.state.searchValue, page);
-    this.setState({ page });
+    this.setState({ loading: true });
+
+    if (this.state.menuKeyBar === "1") {
+      await this.getMovies(this.state.searchValue, page);
+    }
+    if (this.state.menuKeyBar === "2") {
+      const { markFilms, totalPages } = await this.movieServis.getMarkFilms(
+        page
+      );
+
+      this.setState({ movies: markFilms, totalPages });
+    }
+
+    this.setState({ loading: false, page });
     return page;
+  };
+
+  _getAllMarkFilms = async () => {
+    const { markFilms, totalPages } = await this.movieServis.getMarkFilms(1);
+    const results = [...markFilms];
+    for (let i = 2; i === totalPages; i++) {
+      const { markFilms } = await this.movieServis.getMarkFilms(i);
+      results.push(...markFilms);
+    }
+    return results;
+  };
+
+  // ошибка
+  onError = () => {
+    this.setState({
+      error: true,
+      loading: false,
+    });
   };
   render() {
     return (
