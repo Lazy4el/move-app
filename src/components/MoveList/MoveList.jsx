@@ -1,14 +1,12 @@
-/* eslint-disable no-undef */
 import React from "react";
-import { Layout, Row, Pagination, Spin, Alert, Result } from "antd";
+import { Layout, Spin, Alert, Result } from "antd";
 
 import "./MoveList.css";
-import MoveItem from "../MoveItem/MoveItem";
+import MoveView from "../MoveView/MoveView";
 
 const { Content } = Layout;
 
 export default class MoveList extends React.Component {
-  getPage = this.props.getPage;
   render() {
     const { genres, error, loading, movies, page, totalPages } =
       this.props.paramFilms;
@@ -28,7 +26,7 @@ export default class MoveList extends React.Component {
           genres={genres}
           page={page}
           totalPages={totalPages}
-          getPage={this.getPage}
+          getPage={this.props.getPage}
         ></MoveView>
       ) : null;
 
@@ -51,40 +49,3 @@ export default class MoveList extends React.Component {
     );
   }
 }
-
-const MoveView = ({ movies, genres, totalPages, page, getPage }) => {
-  return (
-    <React.Fragment>
-      <Row gutter={[36, 36]}>
-        {movies.map((element) => {
-          const genre = element.genre_ids.map((genreId) => {
-            return genres.find((el) => {
-              return el.id === genreId;
-            });
-          });
-          return (
-            <MoveItem
-              key={element.id}
-              id={element.id}
-              title={element.original_title}
-              releaseDate={element.release_date}
-              posterPath={element.poster_path}
-              overview={element.overview}
-              voteAverage={element.vote_average}
-              rating={element.rating}
-              genre={genre}
-            ></MoveItem>
-          );
-        })}
-      </Row>
-      <Pagination
-        showSizeChanger={false}
-        className="mainPagination"
-        total={totalPages}
-        defaultPageSize={1}
-        defaultCurrent={page}
-        onChange={getPage}
-      />
-    </React.Fragment>
-  );
-};

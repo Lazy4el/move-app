@@ -6,16 +6,40 @@ import _ from "lodash";
 const { Header } = Layout;
 
 export default class MoveHeader extends React.Component {
+  state = {
+    searchValue: "return",
+    menuKeyBar: "1",
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.searchValue !== this.state.searchValue) {
+      this.props.searchMove(this.state.searchValue);
+    }
+
+    if (prevProps.menuKeyBar !== this.state.menuKeyBar) {
+      this.props.setMenuKey(this.state.menuKeyBar);
+    }
+  }
+
   hundleOnSearch = _.debounce((e) => {
     const value = e.target.value;
     if (value.trim().length) {
-      this.props.searchMove(value);
+      this.setState(() => {
+        return { searchValue: value };
+      });
+    } else {
+      this.setState(() => {
+        return { searchValue: "return" };
+      });
     }
   }, 300);
 
   hundleMenu = (e) => {
-    this.props.setMenuKey(e.key);
+    this.setState(() => {
+      return { menuKeyBar: e.key };
+    });
   };
+
   render() {
     const searchBarVisible =
       this.props.menuKeyBar === "1" ? (
